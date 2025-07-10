@@ -2,7 +2,7 @@
 <html>
 <head>
 	<link rel="stylesheet" type="text/css" href="css/bootstrap.min.css">
-	<title></title>
+	<title>Kullanıcı Ekle</title>
 </head>
 <body>
 <body>
@@ -11,70 +11,71 @@
                 <div class="col-md-6">     
                     <ol class="breadcrumb">
                         <li class="breadcrumb-item">
-                            <a href="index.php">Home Page</a>
+                            <a href="index.php">Ana Sayfa</a>
                         </li>
-                        <li class="breadcrumb-item active">New User ADD</li>
+                        <li class="breadcrumb-item active">Yeni Kullanıcı EKLE</li>
                     </ol>            
                     <div class="card mb-3">
                         <div class="card-body">
                             <form method="POST" action="" enctype="multipart/form-data">
                                 <div class="form-group">
-                                    <label>User Name</label>
-                                    <input required type="text" class="form-control" name="user" placeholder="New User Name">
+                                    <label>Kullanıcı Adı</label>
+                                    <input required type="text" class="form-control" name="user" placeholder="Yeni Kullanıcı Adı">
                                 </div>
                                 <div class="form-group">
-                                    <label>New Password</label>
-                                    <input required type="password" class="form-control" name="password" placeholder="New Password">
+                                    <label>Yeni Şifre</label>
+                                    <input required type="password" class="form-control" name="password" placeholder="Yeni Şifre">
                                 </div>
                                 <div class="form-group">
-                                    <label>Confirm New Password</label>
-                                    <input required type="password" class="form-control" name="passwordagain" placeholder="Confirm New Password">
+                                    <label>Yeni Şifreyi Onayla</label>
+                                    <input required type="password" class="form-control" name="passwordagain" placeholder="Yeni Şifreyi Onayla">
                                 </div>
                                 <div class="form-group">
-                                    <button type="submit" class="btn btn-primary">Save</button>
+                                    <button type="submit" class="btn btn-primary">Kaydet</button>
                                     <script type="text/javascript" src="js/sweetalert.min.js"></script>
                                     <?php
                                     include('fonc.php');
                                     
-if ($_POST) { // We check if there is a post on the page.
+if ($_POST) { // Sayfada bir gönderi olup olmadığını kontrol ediyoruz.
 
-    $user = $_POST['user'];// After the page is refreshed, we assign the posted values to the variables
+    $user = $_POST['user'];// Sayfa yenilendikten sonra, yayınlanan değerleri değişkenlere atarız
     $password = md5('56' . $_POST['password'] . '23'); 
-     // We encrypt variables with MD5 Format according to specified ranges
-    $passwordagain = md5('56' . $_POST['passwordagain'] . '23'); // We encrypt variables with MD5 Format   
-    $error = "";  // We print our mistakes
+     // Belirtilen aralıklara göre değişkenleri MD5 Formatı ile şifreliyoruz
+    $passwordagain = md5('56' . $_POST['passwordagain'] . '23'); // Değişkenleri MD5 Formatı ile şifreliyoruz   
+    $error = "";  // Hatalarımızı yazdırıyoruz
 
     
     
-    if ($user <> "" && $password <> "" && $error == "") { // // We check if the data fields are empty. You can do it in other controls.
-        //Data to change
+    if ($user <> "" && $password <> "" && $error == "") { // // Veri alanlarının boş olup olmadığını kontrol ediyoruz. Bunu diğer kontrollerde yapabilirsiniz.
+        //Değişecek veriler
         $line = [                       
             'user' => $user,
             'password' => $password, 
 
         ];
 
-        if ($password == $passwordagain && $password != '' && $user != '') {   // Checking if New Password and Repeat Password are the same
+        if ($password == $passwordagain && $password != '' && $user != '') {   // Yeni Şifre ve Tekrarlanan Şifrenin aynı olup olmadığını kontrol etmeu
 
 
             $sql = "INSERT INTO users SET user=:user, password=:password;";   
-                  // If all conditions are positive, we write our data insertion query.
+                  // Tüm koşullar olumluysa, veri ekleme sorgumuzu yazarız.
             $status = $connect->prepare($sql)->execute($line);
 
             if ($status) {
-                echo '<script>swal("New User Added.","New User Added.","success").then((value)=>{ window.location.href = "index.php"}); </script>'; 
-                //If adding data is successful, it is written that it is successful with sweetalert.
-                // If the Add query works, it redirects to the index.php page.
+                echo '<script>swal("Yeni Kullanıcı.","Başarılı Yeni Kullanıcı Eklendi.","success").then((value)=>{ window.location.href = "index.php"}); </script>'; 
+                //Veri ekleme başarılı olursa, sweetalert ile başarılı olduğu yazılır.
+
+// Add sorgusu çalışırsa, index.php sayfasına yönlendirir.
 
             }
         }
         else {
-            echo '<script>swal("Error","Error , Please check your information","error");</script>'; 
-            // If the id is not found or there is an error in the query, we print an error
+            echo '<script>swal("Hata","Hata, Lütfen bilgilerinizi kontrol edin","error");</script>'; 
+            // id bulunamazsa veya sorguda bir hata varsa, bir hata yazdırırız
         }
     }
     if ($error != "") {
-        echo '<script>swal("Error","' . $error . '","Error");</script>'; // We print our errors that may occur in queries and database
+        echo '<script>swal("Error","' . $error . '","Error");</script>'; // Sorgularda ve veritabanında oluşabilecek hatalarımızı yazdırıyoruz
     }
 }
 ?>                        
