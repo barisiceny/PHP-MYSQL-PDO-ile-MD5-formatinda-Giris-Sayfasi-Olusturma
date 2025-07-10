@@ -2,7 +2,7 @@
 <html>
 <head>
 	<meta charset="utf-8">
-	<title></title>
+	<title>PHP PDO LOGİN</title>
 	<link rel="stylesheet" type="text/css" href="css/bootstrap.min.css">
 	<link rel="stylesheet" type="text/css" href="css/all.min.css">
 	
@@ -15,44 +15,44 @@
 </head>
 <body>
 	<?php
-session_start(); //We started the session
-include("fonc.php"); //we included the database
+session_start(); //Oturumu başlattık
+include("fonc.php"); //Veritabanını dahil ettik
 
-//if there is Session available we redirect the page.
+//Oturum varsa sayfayı yeniden yönlendiriyoruz.
 if (isset($_SESSION["Session"]) && $_SESSION["Session"] == "9876") {
     header("location:index.php");
-} //If "remember me" is checked beforehand, we create Session and redirect the page.
+} //"Beni hatırla" önceden işaretlenirse, Oturum oluşturur ve sayfayı yönlendiririz.
 else if (isset($_COOKIE["cookie"])) {
     
-    //Usernames are queried
+    //Kullanıcı adları sorgulanır
     $query = $connect->prepare("select user from users");
     $query->execute();
 
 
-    //We get the usernames one by one with the help of loop
+    //Döngü yardımıyla kullanıcı adlarını tek tek alıyoruz
     while ($result = $query->fetch()) {
-        //If there is a user suitable for the structure we have determined, we look at it.
+        //Belirlediğimiz yapıya uygun bir kullanıcı varsa ona bakarız.
         if ($_COOKIE["cookie"] == md5("aa" . $result['user'] . "bb")) {
 
-            //Session creation, you can make the values here different in terms of security. I also kept the username here
+            //Oturum oluşturma, buradaki değerleri güvenlik açısından farklı hale getirebilirsiniz. Kullanıcı adını da burada tuttum
             $_SESSION["Session"] = "9876";
             $_SESSION["user"] = $result['user'];
 
-            //Redirecting to index pagem
+            //index sayfasına yönlendirme
             header("location:index.php");
         }
     }
 }
-//We check if the login form has been filled
+//Giriş formunun doldurulup doldurulmadığını kontrol ediyoruz
 if ($_POST) {
-    $txtuser = $_POST["txtuser"]; //We assigned the username to the variable
-    $txtpassword = $_POST["txtpassword"]; //we assigned the password to the variable
+    $txtuser = $_POST["txtuser"]; //Kullanıcı adını değişkene atadık
+    $txtpassword = $_POST["txtpassword"]; //Şifreyi değişkene atadık
 }
 ?>
  <div class="container py-5">
     <div class="row">
         <div class="col-md-12">
-		<div class="col-md-12 text-center mb-5"><a href="https://github.com/FRTYZ">
+		<div class="col-md-12 text-center mb-5"><a href="https://github.com/barisiceny">
             <img style="height:70%" src="img/logo.png"></a>
 			</div>
             <div class="row">
@@ -60,57 +60,57 @@ if ($_POST) {
                     <!-- form card login -->
                     <div class="card rounded-0" id="login-form">
                         <div class="card-header">
-                            <h3 class="mb-0">User Login</h3>
+                            <h3 class="mb-0">Kullanıcı Girişi</h3>
                         </div>
                         <div class="card-body">
                             <form class="form" action="" method="POST">
                                 <div class="form-group">
-                                    <label for="uname1">Username</label>
+                                    <label for="uname1">Kullanıcı adı</label>
                                     <input type="text" value="<?php echo @$txtuser ?>" class="form-control form-control-lg rounded-0" name="txtuser" id="inputuser" required name="txtpassword">
      
                                 </div>
                                 <div class="form-group">
-                                    <label>Password</label>
+                                    <label>Parola</label>
                                     <input type="password" class="form-control form-control-lg rounded-0" id="inputPassword" required name="txtpassword">
                         
                                 </div>
 
                                       <label>
                             <input type="checkbox" ID="cbkremember" name="cbkremember"/>
-                            Remember Me
+                            Beni Hatırla
                         	</label>
                         	<br>
 
-                                <button type="submit" class="btn btn-warning btn-lg float-right" ID="btnlogin">Login</button> 
+                                <button type="submit" class="btn btn-warning btn-lg float-right" ID="btnlogin">Giriş Yap</button> 
                                  <script type="text/javascript" src="js/sweetalert.min.js"></script>
                         <?php
-                        //If there is a post, that is, if it is submitted, we control it from the database.
+                        //Bir gönderi varsa, yani gönderilirse, onu veritabanından kontrol ederiz.
                         if ($_POST) {
-                            //In the query, we take the username and see if there is a corresponding password.
+                            //Sorguda kullanıcı adını alıp karşılık gelen bir şifre olup olmadığını görüyoruz.
                             $query = $connect->prepare("select password from users where user=:user");
                             $query->execute(array('user' => htmlspecialchars($txtuser)));
-                            $result = $query->fetch();//executing query and getting data
+                            $result = $query->fetch();//Sorguyu yürütme ve veri alma
 
 
-                            //I encrypted the passwords with md5 and added my own to the beginning and the end.
+                            //Şifreleri md5 ile şifreledim ve başına ve sonuna kendi şifremi ekledim.
                             if (md5("56" . $txtpassword . "23") == $result["password"]) {
-                                $_SESSION["Session"] = "9876"; //Creating a session
+                                $_SESSION["Session"] = "9876"; //Oturum oluşturma
                                 $_SESSION["user"] = $txtuser;
 
-                                //If "remember me" is selected, we create a cookie.
-                                // I created it from the username by encrypting it in the cookie
+                                //"Beni hatırla" seçilirse, bir çerez oluştururuz.
+                                // Çerezde şifreleyerek kullanıcı adından oluşturdum
                                 if (isset($_POST["cbkremember"])) {
                                     setcookie("cookie", md5("aa" . $txtuser . "bb"), time() + (60 * 60 * 24 * 7));
                                 }
-                                  echo '<script>swal("Successful","Signed in Successfully","success").then((value)=>{ window.location.href = "index.php"}); </script>'; 
-                                //If adding data is successful, it is written that it is successful with sweetalert.
-                               // If the Add query worked it redirects to index.php page          
+                                  echo '<script>swal("Başarılı","Başarıyla Oturum Açıldı","success").then((value)=>{ window.location.href = "index.php"}); </script>'; 
+                                //Veri ekleme başarılı olursa, sweetalert ile başarılı olduğu yazılır.
+                                // Ekleme sorgusu işe yaradıysa index.php sayfasına yönlendirir         
 
 
                             } else {
-                                //If the username and password are not entered correctly, we get an error message.
-                                 echo '<script>swal("Oops","Error, Please Check Your Information","error");</script>'; 
-            // If the id is not found or there is an error in the query, we print an error.
+                                //Kullanıcı adı ve şifre doğru girilmezse bir hata mesajı alırız.
+                                 echo '<script>swal("Oops","Hata, Lütfen Bilgilerinizi Kontrol Edin","error");</script>'; 
+            // Kimlik bulunamazsa veya sorguda bir hata varsa, bir hata yazdırırız.
 
                             }
                         }
