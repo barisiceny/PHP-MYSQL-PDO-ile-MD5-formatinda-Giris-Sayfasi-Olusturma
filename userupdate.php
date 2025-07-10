@@ -2,15 +2,15 @@
 <html>
 <head>
     <link rel="stylesheet" type="text/css" href="css/bootstrap.min.css">
-    <title></title>
+    <title>Kullanıcı Düzenle</title>
 </head>
 <?php
-include('fonc.php');  // We Connected Our Database
+include('fonc.php');  // Veritabanımızı Bağladık
 
 $query = $connect->prepare("SELECT * FROM users Where id=:id");
-    // We transfer the incoming IDs to variables and inputs.
+    // Gelen kimlikleri değişkenlere ve girdilere aktarıyoruz.
 $query->execute(['id' => (int)$_GET["id"]]);
-    $result = $query->fetch();//executing query and getting data
+    $result = $query->fetch();//Sorguyu yürütme ve veri alma
 ?>
 <body>
     <div class="container">
@@ -18,9 +18,9 @@ $query->execute(['id' => (int)$_GET["id"]]);
             <div class="col-md-6">
                 <ol class="breadcrumb">
                     <li class="breadcrumb-item">
-                        <a href="index.php">Home Page</a>
+                        <a href="index.php">Ana Sayfa</a>
                     </li>
-                    <li class="breadcrumb-item active">User Update</li>
+                    <li class="breadcrumb-item active">Kullanıcı Güncellemesi</li>
                 </ol>
                 <div class="card mb-3">
 
@@ -29,41 +29,41 @@ $query->execute(['id' => (int)$_GET["id"]]);
                         <form method="post" action="" enctype="multipart/form-data">
 
                             <div class="form-group">
-                                <label>User Name</label>
+                                <label>Kullanıcı Adı</label>
                                 <input required type="text" value="<?= $result["user"] ?>" class="form-control" name="user"
-                                placeholder="New User Name">
+                                placeholder="Yeni Kullanıcı Adı">
                             </div>
 
                             <div class="form-group">
-                                <label>New Password</label>
+                                <label>Yeni Parola</label>
                                 <input required type="password" class="form-control" name="password"
-                                placeholder="Enter New Password">
+                                placeholder="Yeni Parolayı Giriniz">
                             </div>
                             <div class="form-group">
-                                <label>Confirm New Password</label>
+                                <label>Yeni Parolayı Tekrar</label>
                                 <input required type="password" class="form-control" name="passwordagain"
-                                placeholder="Enter Confirm New Password">
+                                placeholder="Yeni Parolayı Tekrar Giriniz">
                             </div>
 
 
                             <div class="form-group">
-                                <button type="submit" class="btn btn-primary">Update</button>
+                                <button type="submit" class="btn btn-primary">Güncelle</button>
                                 <script type="text/javascript" src="js/sweetalert.min.js"></script>
 
                                 <?php
                                 
-if ($_POST) { // We check if there is a post on the page.
+if ($_POST) { // Sayfada bir gönderi olup olmadığını kontrol ediyoruz.
 
-    $user = $_POST['user'];// After the page is refreshed, we assign the posted values to the variables
+    $user = $_POST['user'];// Sayfa yenilendikten sonra, yayınlanan değerleri değişkenlere atarız
     $password = md5('56' . $_POST['password'] . '23');  
-    // We encrypt variables with MD5 Format according to specified ranges
-    $passwordagain = md5('56' . $_POST['passwordagain'] . '23'); // We encrypt variables with MD5 Format   
+    // Belirtilen aralıklara göre değişkenleri MD5 Formatı ile şifreliyoruz
+    $passwordagain = md5('56' . $_POST['passwordagain'] . '23'); // MD5 Forma ile değişkenleri şifreliyoruzt   
     $error = "";
 
-    // We make sure that the data fields are not empty. You can do it in other controls.
+    // Veri alanlarının boş olmadığından emin oluruz. Bunu diğer kontrollerde yapabilirsiniz.
     
-    if ($user <> "" && $password <> "" && $error == "") { // We make sure that the data fields are not empty.
-        //Data to change
+    if ($user <> "" && $password <> "" && $error == "") { // Veri alanlarının boş olmadığından emin oluruz.
+        //Değişecek veriler
         $line = [
             'id' => $_GET['id'],            
             'user' => $user,
@@ -73,24 +73,24 @@ if ($_POST) { // We check if there is a post on the page.
         ];
 
         if ($password == $passwordagain && $password != '' && $user != '') {
-         // We make sure that the data fields are not empty. You can do it in other controls.
+         // Veri alanlarının boş olmadığından emin oluruz. Bunu diğer kontrollerde yapabilirsiniz.
 
             $sql = "UPDATE users SET user=:user,password=:password WHERE id=:id;";
             $status = $connect->prepare($sql)->execute($line);
 
             if ($status) {
-                echo '<script>swal("Successfull","User Updated","success").then((value)=>{ window.location.href = "index.php"});
+                echo '<script>swal("Başarılı","Kullanıcı Güncellendi","success").then((value)=>{ window.location.href = "index.php"});
 
                 </script>';
-            // If the update query is working, it redirects to the products.php page.
+            // Güncelleme sorgusu çalışıyorsa, products.php sayfasına yönlendirilir.
             } 
         }
         else {
-            echo '<script>swal("Oops","Error, Please make sure you entered your information correctly.","error");</script>'; // If the id is not found or there is an error in the query, we print an error.
+            echo '<script>swal("Oops","Hata, Lütfen bilgilerinizi doğru girdiğinizden emin olun.","error");</script>'; // id bulunamazsa veya sorguda bir hata varsa, bir hata yazdırırız.
         }
     }
     if ($error != "") {
-        echo '<script>swal("Oops","' . $error . '","error");</script>'; // We print out any errors that may occur in queries and databases.
+        echo '<script>swal("Oops","' . $error . '","error");</script>'; // Sorgularda ve veritabanlarında oluşabilecek hataları yazdırıyoruz.
     }
 }
 
